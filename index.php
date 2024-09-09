@@ -1,5 +1,7 @@
 <?php
 require_once('functions.php');
+header('Set-Cookie: userId=123');
+setToken();
 ?>
 
 <!DOCTYPE html>
@@ -9,6 +11,9 @@ require_once('functions.php');
   <title>Home</title>
 </head>
 <body>
+  <?php if (!empty($_SESSION['err'])): ?>
+    <p><?= $_SESSION['err']; ?></p>
+  <?php endif; ?>
   welcome hello world
   <div>
      <a href="new.php">
@@ -26,14 +31,15 @@ require_once('functions.php');
 
       <?php foreach (getTodoList() as $todo): ?>
         <tr>
-          <td><?= $todo['id']; ?></td>
-          <td><?= $todo['content']; ?></td>
+          <td><?= e($todo['id']); ?></td>
+          <td><?= e($todo['content']); ?></td>
           <td>
-            <a href="edit.php?id=<?= $todo['id']; ?>">更新</a>
+            <a href="edit.php?id=<?= e($todo['id']); ?>">更新</a>
           </td>
           <td>
             <form action="store.php" method="post">
-              <input type="hidden" name="id" value="<?= $todo['id']; ?>">
+              <input type="hidden" name="id" value="<?= e($todo['id']); ?>">
+              <input type="hidden" name="token" value="<?= $_SESSION['token']; ?>">
               <button type="submit">削除</button>
             </form>
           </td>
@@ -42,5 +48,6 @@ require_once('functions.php');
 
     </table>
   </div>
+  <?php unsetError(); ?>
 </body>
 </html>
